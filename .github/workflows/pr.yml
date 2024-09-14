@@ -1,1 +1,25 @@
+name: Branch Name Validation
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  branch_name_check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Validate branch name
+        run: |
+          BRANCH_NAME=$(echo ${{ github.ref }} | sed 's|refs/heads/||')
+          echo "Checking branch name: $BRANCH_NAME"
+          
+          # Define your allowed patterns
+          if [[ ! "$BRANCH_NAME" =~ ^(feature|hotfix|config)/[A-Z]+-[0-9]+-[a-zA-Z0-9\-]+$ ]]; then
+            echo "Branch name does not follow the naming convention!"
+            exit 1
+  
 
