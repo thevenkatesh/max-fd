@@ -1,22 +1,28 @@
-name: Validate PR
+name: My First GitHub Actions
 
+on: [push]
 
-on:
-  pull_request:
-    types: [opened, edited]
 jobs:
-  validate:
-    runs-on: ubuntu-latest    
-  steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
-    - name: PR title
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
       run: |
-        pr_title="${{ github.event.pull_request.title }}"
-        pr_body="${{ github.event.pull_request.body }}"
-        if [[ ! "$pr_title" =~ ^(feature|hotfix|config)/$jira_ticket_pattern+-[a-zA-Z0-9_-]+$ ]]; then
-          echo "wrong batch naming format"
-          exit 1
-        else
-          echo "right naming"
-        fi
+        python -m pip install --upgrade pip
+        pip install pytest
+
+    - name: Run tests
+      run: |
+        cd src
+        python -m pytest addition.py
