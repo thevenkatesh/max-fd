@@ -1,10 +1,12 @@
 name: Branch Naming Convention Check
-
 on:
-  on:
-  push:
-  pull_request:
-    types: [opened, synchronize]
+  create:
+    branches:
+#on:
+#  on:
+#  push:
+#  pull_request:
+ #   types: [opened, synchronize]
 
 jobs:
   check-branch-name:
